@@ -81,12 +81,27 @@ try:
 
     if inspect.iscoroutinefunction(origin_execute):
         async def dev_utils_execute(server, dynprompt, caches, current_item, extra_data, executed, prompt_id,
-                                    execution_list, pending_subgraph_results, pending_async_nodes):
+                                    execution_list, pending_subgraph_results, pending_async_nodes,
+                                    *args, **kwargs):
             unique_id = current_item
             class_type = dynprompt.get_node(unique_id)['class_type']
             last_node_id = server.last_node_id
-            result = await origin_execute(server, dynprompt, caches, current_item, extra_data, executed, prompt_id,
-                                          execution_list, pending_subgraph_results, pending_async_nodes)
+
+            result = await origin_execute(
+                server,
+                dynprompt,
+                caches,
+                current_item,
+                extra_data,
+                executed,
+                prompt_id,
+                execution_list,
+                pending_subgraph_results,
+                pending_async_nodes,
+                *args,
+                **kwargs
+            )
+
             handle_execute(class_type, last_node_id, prompt_id, server, unique_id)
             return result
     else:
